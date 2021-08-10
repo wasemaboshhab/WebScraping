@@ -11,12 +11,9 @@ public class Main {
                 case Def.MAKO:
                     makoGame();
                     break;
-
                 case Def.WALLA:
                     wallaGame();
                     break;
-
-
                 case Def.YNET:
                     YnetRobot ynet = new YnetRobot(Def.YNET_URL);
                     System.out.println(ynet.getWebsiteDocument().title());
