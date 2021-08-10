@@ -8,19 +8,18 @@ public class Main {
         while (true) {
             websites();
             switch (userChoice()) {
-                case Def.WALLA:
-                    WallaRobot walla = new WallaRobot(Def.WALLA_URL);
-                    System.out.println(walla.getWebsiteDocument().title());
+                case Def.MAKO:
+                    makoGame();
                     break;
+
+                case Def.WALLA:
+                    wallaGame();
+                    break;
+
 
                 case Def.YNET:
                     YnetRobot ynet = new YnetRobot(Def.YNET_URL);
                     System.out.println(ynet.getWebsiteDocument().title());
-                    break;
-
-
-                case Def.MAKO:
-                    makoGame();
                     break;
                 default:
                     System.out.println("invalid!");
@@ -37,7 +36,32 @@ public class Main {
 
 
     }
+    private static void wallaGame() {
+        System.out.println("\t\tCOLLECT POINTS!!");
+        System.out.println("Loading...");
+        Scanner scanner = new Scanner(System.in);
+        WallaRobot walla = new WallaRobot(Def.WALLA_URL);
+        int userPoints = 0; String userGuesses = "";
+        Map<String, Integer> wordsStatistics = walla.getWordsStatistics();
+        System.out.println("Guess what the most FIVE!  common words is\n!!As a hint here is the longest article\n\t\t > " + walla.getLongestArticleTitle() + " < ");
+        for (int i = 0; i < Def.FIVE_GUESSES; i++) {
+            System.out.println(i+1 + ": ");
+            userGuesses = scanner.next();
+            if (wordsStatistics.containsKey(userGuesses)) {
+                userPoints += wordsStatistics.get(userGuesses);
+            }
+        }
+        int realTextAppears = walla.countInArticlesTitles(shortTextFromUser());
+        System.out.println("How many times you think its appears ?\n>");
+        int userThinkItAppears = userThinkThatTextAppear();
+        if (realTextAppears == userThinkItAppears + 1 || userThinkItAppears - 1 == realTextAppears||
+                realTextAppears == userThinkItAppears + 2 || userThinkItAppears - 2 == realTextAppears){
+            userPoints += Def.PRICE_FOR_GOOD_GUESS;}
+        System.out.println("\n\t\t > Point Collected : " + userPoints + " <");
 
+
+
+    }
     private static void makoGame() {
         Scanner scanner = new Scanner(System.in);
         MakoRobot mako = new MakoRobot(Def.MAKO_URL);
@@ -85,9 +109,9 @@ public class Main {
 
     private static void websites() {
         System.out.println("    Website List");
-        System.out.println("1-Walla");
-        System.out.println("2-Ynet");
-        System.out.println("3-Mako");
+        System.out.println("1-Mako");
+        System.out.println("2-Walla");
+        System.out.println("3-Ynet");
     }
 
     private static int userChoice() {
@@ -101,5 +125,4 @@ public class Main {
         }
         return userWebsite;
     }
-
 }

@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MakoRobot  extends BaseRobot  {
+public class MakoRobot   extends BaseRobot   {
     private int longestArticleIndex;
-    private HashMap<String, Integer> frequencyWords;
+
 
     public MakoRobot(String rootWebsiteUrl) {
         super(rootWebsiteUrl);
@@ -25,11 +25,10 @@ public class MakoRobot  extends BaseRobot  {
 
     private void foundUrlTitlesAndMainArticle() {
         Elements specialSlider = this.getWebsiteDocument().getElementsByClass("teasers");
-        Elements specialTitleElements = specialSlider.get(0).getElementsByClass("slider_image_inside");
-        for (Element currentElement : specialTitleElements) {
-            String currentUrlTitle = currentElement.getElementsByTag("a").attr("href");
-            checkIntegrityUrlAndAddTOList(currentUrlTitle);
-                 //mainArticleText of specialTitles
+        Elements specialArticlesElements = specialSlider.get(0).getElementsByClass("slider_image_inside");
+        for (Element currentElement : specialArticlesElements) {
+            String currentUrlArticle = currentElement.getElementsByTag("a").attr("href");
+            checkIntegrityUrlAndAddTOList(currentUrlArticle);
                 Def.MAKO_ARTICLES_TITLE.add(currentElement.text());
         }
 
@@ -53,43 +52,13 @@ public class MakoRobot  extends BaseRobot  {
         }
     }
     private Document joinWebSite(String link) {
-        Document urlTitle = null;
+        Document webSiteDocument = null;
         try {
-            urlTitle = Jsoup.connect(link).get();
+            webSiteDocument = Jsoup.connect(link).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return urlTitle;
-    }
-
-
-//    @Override
-//    public Map<String, Integer> getWordsStatistics() {
-//        for (String word : collectWords()) {
-//            Integer incidenceWord = this.frequencyWords.get(word);
-//            if (incidenceWord == null) incidenceWord = 0;
-//            this.frequencyWords.put(word, ++incidenceWord);
-//        }
-//        return this.frequencyWords;
-//    }
-    public Map<String, Integer> getWordsStatistics() {
-        Map<String, Integer> wordsStatistics = new HashMap<>();
-        for (String word : collectWords()) {
-            Integer incidenceWord = wordsStatistics.get(word);
-            if (incidenceWord == null) incidenceWord = 0;
-            wordsStatistics.put(word, ++incidenceWord);
-        }
-        return wordsStatistics;
-    }
-
-    @Override
-    public int countInArticlesTitles(String text) {
-        int counter = 0;
-        for (String currentArticleTitle : Def.MAKO_ARTICLES_TITLE) {
-            if (text.contains(currentArticleTitle)){     counter++;}
-        }
-
-        return counter;
+        return webSiteDocument;
     }
 
     private String[] collectWords() {
@@ -119,6 +88,29 @@ public class MakoRobot  extends BaseRobot  {
         String[] words;
         words = allTheWord.split(" ");
         return words;
+    }
+
+
+
+    @Override
+    public Map<String, Integer> getWordsStatistics() {
+        Map<String, Integer> wordsStatistics = new HashMap<>();
+        for (String currentWord : collectWords()) {
+            Integer incidenceWord = wordsStatistics.get(currentWord);
+            if (incidenceWord == null) incidenceWord = 0;
+            wordsStatistics.put(currentWord, ++incidenceWord);
+        }
+        return wordsStatistics;
+    }
+
+    @Override
+    public int countInArticlesTitles(String text) {
+        int counter = 0;
+        for (String currentArticleTitle : Def.MAKO_ARTICLES_TITLE) {
+            if (text.contains(currentArticleTitle)){     counter++;}
+        }
+
+        return counter;
     }
 
     @Override
@@ -164,11 +156,4 @@ public class MakoRobot  extends BaseRobot  {
         this.longestArticleIndex = longestArticleIndex;
     }
 
-    public HashMap<String, Integer> getFrequencyWords() {
-        return frequencyWords;
-    }
-
-    public void setFrequencyWords(HashMap<String, Integer> frequencyWords) {
-        this.frequencyWords = frequencyWords;
-    }
 }
