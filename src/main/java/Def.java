@@ -12,6 +12,9 @@ public class Def {
     public static final List<String> MAKO_ARTICLES_TITLE = new ArrayList<>();
     public static final List<String> URL_WALLA_ARTICLES = new ArrayList<>();
     public static final List<String> WALLA_ARTICLES_TITLE = new ArrayList<>();
+    public static final List<String> URL_YNET_ARTICLES = new ArrayList<>();
+    public static final List<String> YNET_ARTICLES_TITLE = new ArrayList<>();
+
 
 
     public static final int FIVE_GUESSES = 5;

@@ -3,87 +3,73 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+        int pointsCollectedByUser, realTextAppears;
 
 
         while (true) {
             websites();
+
             switch (userChoice()) {
                 case Def.MAKO:
-                    makoGame();
+                    sayLoading();
+                    MakoRobot mako = new MakoRobot(Def.MAKO_URL);
+                    System.out.println("Guess what the most FIVE!  common words is\n!!As a hint: the longest article is\n\t\t > " + mako.getLongestArticleTitle() + " <\nLoading...");
+                    pointsCollectedByUser = guessWordToCollectPoints(mako.getWordsStatistics());
+                    realTextAppears = mako.countInArticlesTitles(shortTextFromUser());
+                    pointsCollectedByUser = givePriceForGoodGuess(realTextAppears, pointsCollectedByUser);
+                    System.out.println("\n\t\t > Point Collected : " + pointsCollectedByUser + " <");
                     break;
                 case Def.WALLA:
-                    wallaGame();
+                    sayLoading();
+                    WallaRobot walla = new WallaRobot(Def.WALLA_URL);
+                    System.out.println("Guess what the most FIVE!  common words is\n!!As a hint: the longest article is\n\t\t > " + walla.getLongestArticleTitle() + " <\nLoading...");
+                    pointsCollectedByUser = guessWordToCollectPoints(walla.getWordsStatistics());
+                    realTextAppears = walla.countInArticlesTitles(shortTextFromUser());
+                    pointsCollectedByUser = givePriceForGoodGuess(realTextAppears, pointsCollectedByUser);
+                    System.out.println("\n\t\t > Point Collected : " + pointsCollectedByUser + " <");
                     break;
                 case Def.YNET:
+                   sayLoading();
                     YnetRobot ynet = new YnetRobot(Def.YNET_URL);
-                    System.out.println(ynet.getWebsiteDocument().title());
+                    System.out.println("Guess what the most FIVE!  common words is\n!!As a hint here: the longest article is\n\t\t > " + ynet.getLongestArticleTitle() + " <\nLoading...");
+                    pointsCollectedByUser = guessWordToCollectPoints(ynet.getWordsStatistics());
+                    realTextAppears = ynet.countInArticlesTitles(shortTextFromUser());
+                    pointsCollectedByUser = givePriceForGoodGuess(realTextAppears, pointsCollectedByUser);
+                    System.out.println("\n\t\t > Point Collected : " + pointsCollectedByUser + " <");
                     break;
                 default:
                     System.out.println("invalid!");
             }
-
         }
-
-
-
-
-
-
-
-
-
     }
-    private static void wallaGame() {
-        System.out.println("\t\tCOLLECT POINTS!!");
-        System.out.println("Loading...");
+
+    private static int givePriceForGoodGuess(int realTextAppears, int pointsCollectedByUser) {
+        System.out.println("How many times you think its appears ?\n>");
+        int userThinkItAppears = userThinkThatTextAppear();
+        if (realTextAppears + 1 == userThinkItAppears || realTextAppears - 1 == userThinkItAppears ||
+                realTextAppears + 2 == userThinkItAppears || realTextAppears - 2 == userThinkItAppears) {
+            pointsCollectedByUser += Def.PRICE_FOR_GOOD_GUESS;
+        }
+        return pointsCollectedByUser;
+    }
+    private static int guessWordToCollectPoints(Map<String, Integer> wordsStatistics) {
         Scanner scanner = new Scanner(System.in);
-        WallaRobot walla = new WallaRobot(Def.WALLA_URL);
-        int userPoints = 0; String userGuesses = "";
-        Map<String, Integer> wordsStatistics = walla.getWordsStatistics();
-        System.out.println("Guess what the most FIVE!  common words is\n!!As a hint here is the longest article\n\t\t > " + walla.getLongestArticleTitle() + " < ");
+        int userPoints = 0;
+        String userGuesses = "";
         for (int i = 0; i < Def.FIVE_GUESSES; i++) {
-            System.out.println(i+1 + ": ");
+            System.out.println(i + 1 + ": ");
             userGuesses = scanner.next();
             if (wordsStatistics.containsKey(userGuesses)) {
                 userPoints += wordsStatistics.get(userGuesses);
             }
+            System.out.println("\t\t\t YOUR POINTS: " + userPoints);
         }
-        int realTextAppears = walla.countInArticlesTitles(shortTextFromUser());
-        System.out.println("How many times you think its appears ?\n>");
-        int userThinkItAppears = userThinkThatTextAppear();
-        if (realTextAppears == userThinkItAppears + 1 || userThinkItAppears - 1 == realTextAppears||
-                realTextAppears == userThinkItAppears + 2 || userThinkItAppears - 2 == realTextAppears){
-            userPoints += Def.PRICE_FOR_GOOD_GUESS;}
-        System.out.println("\n\t\t > Point Collected : " + userPoints + " <");
-
-
-
+        return userPoints;
     }
-    private static void makoGame() {
-        Scanner scanner = new Scanner(System.in);
-        MakoRobot mako = new MakoRobot(Def.MAKO_URL);
-        int userPoints = 0; String userGuesses = "";
-        System.out.println("\t\tCOLLECT POINTS!!");
-        System.out.println("Loading...");
-        Map<String, Integer> wordsStatistics = mako.getWordsStatistics();
-        System.out.println("Guess what the most FIVE!  common words is\n!!As a hint here is the longest article\n\t\t > " + mako.getLongestArticleTitle() + " < ");
-        for (int i = 0; i < Def.FIVE_GUESSES; i++) {
-            System.out.println(i+1 + ": ");
-            userGuesses = scanner.next();
-            if (wordsStatistics.containsKey(userGuesses)) {
-                userPoints += wordsStatistics.get(userGuesses);
-            }
-        }
-        int realTextAppears = mako.countInArticlesTitles(shortTextFromUser());
-        System.out.println("How many times you think its appears ?\n>");
-        int userThinkItAppears = userThinkThatTextAppear();
-        if (realTextAppears == userThinkItAppears + 1 || userThinkItAppears - 1 == realTextAppears||
-                realTextAppears == userThinkItAppears + 2 || userThinkItAppears - 2 == realTextAppears){
-            userPoints += Def.PRICE_FOR_GOOD_GUESS;}
-        System.out.println("\n\t\t > Point Collected : " + userPoints + " <");
-
+    private static void sayLoading() {
+        System.out.println("loading...");
     }
-        private static String shortTextFromUser() {
+    private static String shortTextFromUser() {
         Scanner inputText = new Scanner(System.in);
         String userText = "";
         do {
@@ -92,7 +78,7 @@ public class Main {
         } while (userText.length() > 20);
         return userText;
     }
-        private static int userThinkThatTextAppear () {
+    private static int userThinkThatTextAppear () {
         Scanner scanner = new Scanner(System.in);
         int userTextAppear = 0;
         try {
@@ -102,15 +88,13 @@ public class Main {
         }
         return userTextAppear;
     }
-
-
     private static void websites() {
+        System.out.println("\t\tCOLLECT POINTS BY GUESSES");
         System.out.println("    Website List");
         System.out.println("1-Mako");
         System.out.println("2-Walla");
         System.out.println("3-Ynet");
     }
-
     private static int userChoice() {
         Scanner scanner = new Scanner(System.in);
         System.out.println(">");

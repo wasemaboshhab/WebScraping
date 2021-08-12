@@ -1,26 +1,19 @@
 
-
-
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MakoRobot   extends BaseRobot   {
-    private int longestArticleIndex;
 
 
     public MakoRobot(String rootWebsiteUrl) {
         super(rootWebsiteUrl);
         foundUrlTitlesAndMainArticle();
-
-
     }
 
     private void foundUrlTitlesAndMainArticle() {
@@ -60,7 +53,6 @@ public class MakoRobot   extends BaseRobot   {
         }
         return webSiteDocument;
     }
-
     private String[] collectWords() {
         String space = " ";
         Elements mainParagraphElement;
@@ -92,6 +84,7 @@ public class MakoRobot   extends BaseRobot   {
 
 
 
+
     @Override
     public Map<String, Integer> getWordsStatistics() {
         Map<String, Integer> wordsStatistics = new HashMap<>();
@@ -106,10 +99,8 @@ public class MakoRobot   extends BaseRobot   {
     @Override
     public int countInArticlesTitles(String text) {
         int counter = 0;
-        for (String currentArticleTitle : Def.MAKO_ARTICLES_TITLE) {
-            if (text.contains(currentArticleTitle)){     counter++;}
-        }
-
+        for (String currentArticleTitle : Def.MAKO_ARTICLES_TITLE)
+            if (currentArticleTitle.contains(text)){     counter++;}
         return counter;
     }
 
@@ -118,6 +109,7 @@ public class MakoRobot   extends BaseRobot   {
         String space = " ";
         Elements mainParagraphElement;
         Elements titleElement;
+        int longestArticleIndex = 0;
 
         int tempLongestArticle = 0;
         for (int i = 0; i < Def.URL_MAKO_ARTICLES.size(); i++) {
@@ -137,23 +129,10 @@ public class MakoRobot   extends BaseRobot   {
             }
             if (tempLongestArticle < currentArticleText.length()) {
                 tempLongestArticle = currentArticleText.length();
-                setLongestArticleIndex(i);
+                longestArticleIndex = i;
             }
         }
-        return Def.MAKO_ARTICLES_TITLE.get(this.longestArticleIndex);
-    }
-
-
-
-
-
-
-    public int getLongestArticleIndex() {
-        return longestArticleIndex;
-    }
-
-    public void setLongestArticleIndex(int longestArticleIndex) {
-        this.longestArticleIndex = longestArticleIndex;
+        return Def.MAKO_ARTICLES_TITLE.get(longestArticleIndex);
     }
 
 }

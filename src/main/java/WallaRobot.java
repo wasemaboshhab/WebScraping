@@ -61,6 +61,7 @@ public class WallaRobot extends BaseRobot {
     }
 
 
+
     @Override
     public Map<String, Integer> getWordsStatistics() {
         Map<String, Integer> wordsStatistics = new HashMap<>();
@@ -93,10 +94,9 @@ public class WallaRobot extends BaseRobot {
     }
     @Override
     public int countInArticlesTitles(String text) {
-//  כמה פעמים המחרוזת מופיעה בכותרות או כתרות משנה בעמוד הבית
         int counter = 0;
         for (String currentArticleTitle : Def.WALLA_ARTICLES_TITLE)
-            if (text.contains(currentArticleTitle)) counter++;
+            if (currentArticleTitle.contains(text)) counter++;
         return counter;
     }
     @Override
